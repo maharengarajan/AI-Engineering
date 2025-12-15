@@ -416,3 +416,237 @@ print(tokenizer.decode(output[0], skip_special_tokens=True))
 ```
 
 ---
+## 1. Where temperature fits in text generation
+
+Inside a language model, text generation works like this:
+
+```
+Input text → Neural network → logits → softmax → probability distribution → sample next token
+```
+
+**Temperature directly modifies the logits before softmax.**
+
+---
+
+## 2. What are logits?
+
+* The model does **not** output probabilities directly.
+* It outputs **logits** → raw, unnormalized scores for each token in the vocabulary.
+
+Example (simplified):
+
+| Token   | Logit |
+| ------- | ----- |
+| "cat"   | 3.0   |
+| "dog"   | 2.0   |
+| "car"   | 0.5   |
+| "apple" | -1.0  |
+
+Higher logit = model prefers that token more.
+
+---
+
+## 3. Softmax (normal behavior)
+
+Softmax converts logits into probabilities:
+
+```
+P(token) = exp(logit) / sum(exp(all logits))
+```
+
+This creates a probability distribution over tokens.
+
+---
+
+## 4. Temperature: the core idea
+
+**Temperature scales the logits before softmax**
+
+### Formula
+
+```
+scaled_logits = logits / temperature
+probabilities = softmax(scaled_logits)
+```
+
+This is the *only* thing temperature does internally.
+
+---
+
+## 5. What changing temperature actually does
+
+### Case 1: Temperature = 1.0 (default behavior)
+
+```
+scaled_logits = logits / 1.0 = logits
+```
+
+* Normal probability distribution
+* Balanced randomness
+
+---
+
+### Case 2: Temperature < 1 (e.g., 0.5)
+
+```
+scaled_logits = logits / 0.5 = logits × 2
+```
+
+* Differences between logits become **larger**
+* High-probability tokens become **much more dominant**
+* Low-probability tokens almost disappear
+
+🔹 **Effect**:
+
+* More deterministic
+* Less creative
+* Repetitive but safer
+
+---
+
+### Case 3: Temperature > 1 (e.g., 1.5)
+
+```
+scaled_logits = logits / 1.5
+```
+
+* Differences between logits become **smaller**
+* Distribution becomes flatter
+* Rare tokens get more chance
+
+🔹 **Effect**:
+
+* More randomness
+* More creativity
+* Higher risk of nonsense
+
+---
+
+### Case 4: Temperature → 0 (almost zero)
+
+```
+scaled_logits → very large differences
+```
+
+* Softmax becomes almost a **hard max**
+* Always picks the highest-probability token
+
+This is basically **greedy decoding**.
+
+---
+
+## 6. Concrete numeric example
+
+### Original logits
+
+| Token | Logit |
+| ----- | ----- |
+| A     | 4     |
+| B     | 2     |
+| C     | 1     |
+
+### Temperature = 1.0
+
+Softmax ≈
+
+* A: 0.84
+* B: 0.11
+* C: 0.05
+
+---
+
+### Temperature = 0.5
+
+Logits × 2 → `[8, 4, 2]`
+
+Softmax ≈
+
+* A: 0.96
+* B: 0.03
+* C: 0.01
+
+➡ Very confident, low diversity
+
+---
+
+### Temperature = 2.0
+
+Logits ÷ 2 → `[2, 1, 0.5]`
+
+Softmax ≈
+
+* A: 0.57
+* B: 0.21
+* C: 0.22
+
+➡ Much more diverse
+
+---
+
+## 7. Intuition (simple explanation)
+
+Think of temperature like **confidence vs curiosity**:
+
+* 🔥 **Low temperature** → “I’m confident, I’ll pick the safest word”
+* 🌡 **High temperature** → “I’ll explore less obvious words”
+
+---
+
+## 8. What temperature is *based on*
+
+Temperature is based on **statistical mechanics** and **Boltzmann distribution**:
+
+```
+P(state) ∝ exp(-Energy / Temperature)
+```
+
+In LLMs:
+
+* Logits ≈ negative energy
+* Softmax with temperature = Boltzmann sampling
+
+So temperature controls **entropy** of the output distribution.
+
+---
+
+## 9. Important clarifications
+
+❌ Temperature does **not**:
+
+* Change model weights
+* Affect training
+* Add new knowledge
+
+✅ It only:
+
+* Changes **sampling behavior**
+* Controls randomness at inference time
+
+---
+
+## 10. Temperature vs Top-k / Top-p (quick contrast)
+
+| Parameter   | What it does                                            |
+| ----------- | ------------------------------------------------------- |
+| Temperature | Scales probabilities                                    |
+| Top-k       | Restricts to k most likely tokens                       |
+| Top-p       | Restricts to smallest set with cumulative probability p |
+
+Usually used **together**.
+
+---
+
+## 11. Practical guidelines
+
+| Task                 | Temperature |
+| -------------------- | ----------- |
+| Code generation      | 0.0 – 0.3   |
+| QA / factual answers | 0.1 – 0.4   |
+| Chatbots             | 0.6 – 0.9   |
+| Creative writing     | 0.9 – 1.3   |
+
+---
+
+### One-line summary
+
+> **Temperature works by scaling logits before softmax, controlling how peaked or flat the probability distribution is — lower = safer, higher = more creative.**
