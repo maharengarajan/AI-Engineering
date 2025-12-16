@@ -416,7 +416,7 @@ print(tokenizer.decode(output[0], skip_special_tokens=True))
 ```
 
 ---
-## 1. Where temperature fits in text generation
+# 1. Where temperature fits in text generation
 
 Inside a language model, text generation works like this:
 
