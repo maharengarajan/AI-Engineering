@@ -1,0 +1,17 @@
+1. Write a single line lambda function to print even numbers from 1 to 10
+
+2. Find the Largest sum of any contiguous subarray
+lis1 = [-2, 1, -3, 4, -1, 2, 1, -5, 4] 
+Expected Output: 6
+
+3. 
+find max review length
+contents of customer review with longest length
+id of customer who had written longest review 
+
+customer_review = [ 'product is bad', 'i enjoyed the service quality', 'Oh, product price is really very expensive'] 
+customer_details = ['CUST01','CUST12','CUST08']
+
+4. Write a python code to find prime numbers
+
+5. Write a python code to find palindrome
