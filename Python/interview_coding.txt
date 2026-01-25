@@ -15,3 +15,36 @@ customer_details = ['CUST01','CUST12','CUST08']
 4. Write a python code to find prime numbers
 
 5. Write a python code to find palindrome
+
+6.Find out the highest salary and recently joined name in the below dataframe
+data = {'name': ['Virat', 'Ronaldo', 'Rohit'],
+        'salary': [50000, 60000, 55000],
+        'date_joined': ['2018-01-01', '2017-01-01', '2019-01-01']}
+
+7.Find out the average grades of the classes in the below dataframe
+students_data = [
+    {"name": "Alice", "class": "10th", "grades": [85, 90, 78]},
+    {"name": "Bob", "class": "10th", "grades": [70, 88]},
+    {"name": "Charlie", "class": "9th", "grades": []},
+    {"name": "David", "class": "10th", "grades": [95, 100, 92, 88]},
+    {"name": "Eve", "class": "9th", "grades": [80, 85, 88]}
+]
+
+8. You are provided with data on students and their scores in various subjects. 
+Your task is to manipulate this data using Pandas, dictionaries, lists, and tuples to perform a series of transformations and calculations.
+
+Given Data:
+A list of tuples, where each tuple contains a student's name and their marks in three subjects: Mathematics, Science, and English
+data =
+    ("Alice", 85, 92, 78),
+    ("Bob", 79, 80, 85),
+    ("Charlie", 90, 95, 88),
+    ("David", 72, 85, 82),
+    ("Eve", 88, 79, 91)
+
+
+Convert the given list of tuples into a Pandas DataFrame with the following columns: 'Name', 'Mathematics', 'Science', 'English'.
+Calculate the average score of each student across all subjects and store it in a new column called 'Average'.
+Create a dictionary where the keys are student names, and the values are their respective average scores.
+Filter out the students with an average score of 85 or more and store their names in a list.
+Return the names of the top two students based on their average scores as a tuple.
